@@ -1,7 +1,8 @@
 # ATSense — AI-Powered Resume Analyzer
 
-<img width="1186" height="619" alt="image" src="https://github.com/user-attachments/assets/92cb5935-b397-479e-adef-fc47980dae0c" />
+
 <img width="1180" height="622" alt="image" src="https://github.com/user-attachments/assets/103d42c8-21b3-405e-b5fd-21be6b5c30fa" />
+<img width="1186" height="619" alt="image" src="https://github.com/user-attachments/assets/92cb5935-b397-479e-adef-fc47980dae0c" />
 
 
 **Live Demo → [atsense-resume-analyzer.streamlit.app](https://atsense-resume-analyzer.streamlit.app)**
