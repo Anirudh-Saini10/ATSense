@@ -1,5 +1,6 @@
 import streamlit as st
 from gemini_utils import get_gemini_response
+from PyPDF2 import PdfReader
 from prompt import build_prompt
 from parser import parse_response
 from styles import custom_css
@@ -25,8 +26,30 @@ st.markdown("""
 col1, col2 = st.columns(2, gap="large")
 with col1:
     st.markdown("<div class='sec-head'>📄 Your Resume</div>", unsafe_allow_html=True)
-    resume = st.text_area("resume", placeholder="Paste your full resume here...",
-                          height=360, label_visibility="collapsed")
+    uploaded_file = st.file_uploader(
+    "Upload Resume PDF",
+    type=["pdf"]
+)
+
+resume = ""
+
+if uploaded_file is not None:
+
+    pdf_reader = PdfReader(uploaded_file)
+
+    for page in pdf_reader.pages:
+        text = page.extract_text()
+
+        if text:
+            resume += text
+
+
+resume = st.text_area(
+    "Resume",
+    value=resume,
+    height=350,
+    label_visibility="collapsed"
+)
 with col2:
     st.markdown("<div class='sec-head'>💼 Job Description</div>", unsafe_allow_html=True)
     job_description = st.text_area("jd", placeholder="Paste the job description here...",
