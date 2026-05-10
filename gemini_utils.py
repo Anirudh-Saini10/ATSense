@@ -1,17 +1,20 @@
-from google import genai
+import google.generativeai as genai
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+model = genai.GenerativeModel("models/gemini-flash-latest")
+
 
 def get_gemini_response(prompt):
+
     try:
-        response = client.models.generate_content(
-            model="gemini-1.5-flash-latest",
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
         return response.text
+
     except Exception as e:
         return str(e)
