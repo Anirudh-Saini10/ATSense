@@ -138,8 +138,18 @@ if analyze:
                 unsafe_allow_html=True)
 
     # FOOTER
-    st.markdown("""
-    <div style='text-align:center; color:#374151; font-size:13px; margin-top:3rem;'>
-        ATS scoring is AI-generated for educational and demo purposes only.
+    st.markdown(
+    """
+    <div style="
+        text-align:center;
+        color:#6B7280;
+        margin-top:40px;
+        font-size:14px;
+    ">
+        ATS scoring is AI-generated and simulated for educational/demo purposes.
+        <br><br>
+        ATSense • Built by Anirudh Saini
     </div>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
