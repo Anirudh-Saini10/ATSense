@@ -1,6 +1,17 @@
 # ATSense — AI-Powered Resume Analyzer
 
+<<<<<<< HEAD
 **Live Demo →** https://atsense-wheat.vercel.app
+=======
+
+<img width="1355" height="611" alt="image" src="https://github.com/user-attachments/assets/69ed9f58-1809-4792-a6ef-92f6627f3c69" />
+
+<img width="1255" height="620" alt="image" src="https://github.com/user-attachments/assets/a37d3abc-f538-4941-a549-e0fa23dfb33f" />
+
+
+
+**Live Demo → https://atsense-wheat.vercel.app/
+>>>>>>> origin/main
 
 ATSense is an LLM-powered ATS (Applicant Tracking System) resume analyzer that compares your resume against a job description and gives you an instant match score, skill gap breakdown, and AI-rewritten bullet points — in seconds.
 
