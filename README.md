@@ -4,7 +4,7 @@
 
 
 
-**Live Demo → https://atsense-wheat.vercel.app/https://atsense-wheat.vercel.app/
+**Live Demo → https://atsense-wheat.vercel.app/
 
 ATSense is an LLM-powered ATS (Applicant Tracking System) resume analyzer that compares your resume against a job description and gives you an instant match score, skill gap breakdown, and AI-rewritten bullet points — in seconds.
 
