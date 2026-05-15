@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.3.2",
+    "next": "16.2.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "@google/generative-ai": "^0.24.0",
@@ -29,6 +29,6 @@
     "tailwindcss": "^4.1.6",
     "@tailwindcss/postcss": "^4.1.6",
     "eslint": "^9.26.0",
-    "eslint-config-next": "15.3.4"
+    "eslint-config-next": "16.2.6"
   }
 }
