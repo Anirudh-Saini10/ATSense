@@ -1,8 +1,6 @@
 # ATSense — AI-Powered Resume Analyzer
 
 
-<img width="1237" height="622" alt="image" src="https://github.com/user-attachments/assets/9f812d72-7fb8-49d2-89ec-1244291f1142" />
-<img width="1172" height="598" alt="image" src="https://github.com/user-attachments/assets/742beb59-9ba5-4fb9-b354-2baea4845711" />
 
 
 
