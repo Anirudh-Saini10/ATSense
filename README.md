@@ -196,4 +196,4 @@ This makes the output deterministic and parseable every time.
 
 **Anirudh Saini** — B.Tech CS (AI/ML), Manipal University Jaipur
 
-[LinkedIn](https://linkedin.com/in/anirudh-saini) · [GitHub](https://github.com/anirudh-saini)
+
