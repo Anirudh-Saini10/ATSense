@@ -1,10 +1,6 @@
 # ATSense — AI-Powered Resume Analyzer
 
-
-
-
-
-**Live Demo → https://atsense-wheat.vercel.app/
+**Live Demo →** https://atsense-wheat.vercel.app
 
 ATSense is an LLM-powered ATS (Applicant Tracking System) resume analyzer that compares your resume against a job description and gives you an instant match score, skill gap breakdown, and AI-rewritten bullet points — in seconds.
 
@@ -12,7 +8,7 @@ ATSense is an LLM-powered ATS (Applicant Tracking System) resume analyzer that c
 
 ## What It Does
 
-Paste your resume and a job description. ATSense runs a full analysis and returns:
+Upload or paste your resume alongside a job description. ATSense runs a full analysis and returns:
 
 - **ATS Match Score** (0–100) with a Strong / Moderate / Weak classification
 - **Matching Skills** — skills your resume already has that the JD requires
@@ -28,26 +24,32 @@ Paste your resume and a job description. ATSense runs a full analysis and return
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Streamlit |
-| LLM | Google Gemini 1.5 Flash |
+| Frontend | Next.js 16 + TypeScript + Tailwind CSS v4 |
+| UI Components | shadcn/ui + Framer Motion |
+| PDF Extraction | pdfjs-dist (client-side) |
+| LLM | Google Gemini Flash via Node.js SDK |
 | Prompt Engineering | Structured JSON output via custom prompt |
 | Parsing | Custom JSON parser with error handling |
-| Deployment | Streamlit Cloud |
+| Deployment | Vercel |
 
 ---
 
 ## How It Works
 
 ```
-User Input (Resume + JD)
+User Input (Resume PDF/text + JD)
+        ↓
+Client-side PDF extraction (pdfjs-dist)
+        ↓
+POST /api/analyze → Next.js API route
         ↓
 build_prompt() → structured prompt with JSON schema
         ↓
-Gemini 1.5 Flash API call
+Gemini Flash API call (@google/generative-ai)
         ↓
 parse_response() → extracts JSON from LLM output
         ↓
-Streamlit UI renders score, chips, cards, bullets
+Glassmorphism UI renders animated score ring, skill chips, cards
 ```
 
 The prompt instructs Gemini to return **only valid JSON** with a fixed schema — no markdown, no preamble. The parser strips any formatting artifacts and loads the result.
@@ -58,34 +60,98 @@ The prompt instructs Gemini to return **only valid JSON** with a fixed schema �
 
 ```
 ATSense/
-├── app.py              # Main Streamlit app + UI
-├── gemini_utils.py     # Gemini API wrapper
-├── prompt.py           # Prompt builder
-├── parser.py           # JSON response parser
-├── styles.py           # Custom CSS
-├── requirements.txt
-└── .env                # GEMINI_API_KEY (local only)
+├── frontend/           # Next.js 16 app (deployed)
+│   ├── app/
+│   │   ├── page.tsx            # Main UI
+│   │   ├── layout.tsx          # Root layout
+│   │   ├── globals.css         # Tailwind theme
+│   │   └── api/
+│   │       └── analyze/
+│   │           └── route.ts    # Gemini API route
+│   ├── components/
+│   │   ├── score-ring.tsx      # Animated score ring
+│   │   └── ui/                 # shadcn/ui components
+│   ├── lib/
+│   │   ├── pdf-extractor.ts    # Client-side PDF text extraction
+│   │   └── utils.ts            # Tailwind class merge
+│   ├── public/
+│   │   └── pdf.worker.min.mjs  # PDF.js worker (bundled)
+│   └── package.json
+│
+├── app.py              # Original Streamlit app (preserved)
+├── gemini_utils.py     # Python Gemini wrapper (preserved)
+├── prompt.py           # Prompt builder (preserved)
+├── parser.py           # JSON parser (preserved)
+├── styles.py           # Streamlit CSS (preserved)
+└── requirements.txt    # Python deps (preserved)
 ```
 
 ---
 
-## Running Locally
+## Deploy on Vercel
+
+### 1. Fork / Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/atsense
-cd atsense
-python -m venv venv
-venv\Scripts\activate       # Windows
-pip install -r requirements.txt
+git clone https://github.com/Anirudh-Saini10/ATSense
+cd ATSense
 ```
 
-Create a `.env` file:
+### 2. Vercel Project Settings
+
+- **Framework Preset**: Next.js
+- **Root Directory**: `frontend`
+- **Install Command**: `npm install`
+- **Build Command**: `npm run build`
+
+### 3. Environment Variables
+
+Add this in Vercel dashboard → Project Settings → Environment Variables:
+
+| Key | Value |
+|-----|-------|
+| `GEMINI_API_KEY` | Your Google AI Studio API key |
+
+### 4. Deploy
+
+Push to `main` branch — Vercel auto-deploys on every push.
+
+---
+
+## Running Locally (Frontend)
+
+```bash
+cd frontend
+npm install
+```
+
+Create `frontend/.env.local`:
 
 ```
 GEMINI_API_KEY=your_key_here
 ```
 
-Run:
+```bash
+npm run dev
+```
+
+Open http://localhost:3000
+
+---
+
+## Running Locally (Original Streamlit)
+
+```bash
+python -m venv venv
+venv\Scripts\activate       # Windows
+pip install -r requirements.txt
+```
+
+Create `.env`:
+
+```
+GEMINI_API_KEY=your_key_here
+```
 
 ```bash
 streamlit run app.py
