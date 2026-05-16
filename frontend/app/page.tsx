@@ -65,7 +65,8 @@ export default function Home() {
         try {
           const text = await extractPdf(file);
           setResumeText(text);
-        } catch {
+        } catch (err) {
+          console.error("PDF extraction error:", err);
           setError("Failed to extract text from PDF. You can paste it manually.");
         }
       } else {
