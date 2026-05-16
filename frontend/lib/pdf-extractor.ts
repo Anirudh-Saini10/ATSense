@@ -1,17 +1,11 @@
 "use client";
 
+import * as pdfjsLib from "pdfjs-dist";
+
+// Bundled worker file in public/ - .js extension for universal MIME type support
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js?v=3";
+
 export async function extractTextFromPDF(file: File): Promise<string> {
-  // Dynamic import avoids SSR issues and lets us configure pdfjs on the fly
-  const pdfjsLib = await import("pdfjs-dist");
-
-  // Disable web worker - parse on main thread.
-  // Workers fail on mobile due to cross-origin/MIME restrictions.
-  // Resume PDFs are small (1-2 pages) so main-thread parsing is instant.
-  // @ts-ignore - internal API exists at runtime
-  if (pdfjsLib.GlobalWorkerOptions) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "";
-  }
-
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let text = "";
