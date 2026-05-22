@@ -1,7 +1,7 @@
 # ATSense — AI-Powered Resume Analyzer
 
 <<<<<<< HEAD
-**Live Demo →** https://atsense-wheat.vercel.app
+**Live Demo →** https://atsense-analyse.vercel.app/
 =======
 
 <img width="1355" height="611" alt="image" src="https://github.com/user-attachments/assets/69ed9f58-1809-4792-a6ef-92f6627f3c69" />
