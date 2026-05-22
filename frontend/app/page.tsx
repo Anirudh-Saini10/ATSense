@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, Briefcase, Zap, AlertCircle, Sparkles, ArrowRight, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,35 +45,38 @@ export default function Home() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
-  const [extractPdf, setExtractPdf] = useState<((file: File) => Promise<string>) | null>(null);
-
-  useEffect(() => {
-    import("@/lib/pdf-extractor").then((mod) => {
-      setExtractPdf(() => mod.extractTextFromPDF);
-    });
-  }, []);
 
   const handleFileUpload = useCallback(
     async (file: File) => {
-      if (file.type !== "application/pdf") {
+      // Mobile browsers sometimes report empty or non-standard MIME types,
+      // so also accept by file extension.
+      const isPdf =
+        file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf");
+      if (!isPdf) {
         setError("Please upload a PDF file.");
         return;
       }
       setFileName(file.name);
       setError("");
-      if (extractPdf) {
-        try {
-          const text = await extractPdf(file);
-          setResumeText(text);
-        } catch (err) {
-          console.error("PDF extraction error:", err);
-          setError("Failed to extract text from PDF. You can paste it manually.");
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/extract-pdf", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Extraction failed.");
         }
-      } else {
-        setError("PDF extractor not ready yet. Please paste text manually.");
+        setResumeText(data.text);
+      } catch (err) {
+        console.error("PDF extraction error:", err);
+        setError("Failed to extract text from PDF. You can paste it manually.");
       }
     },
-    [extractPdf]
+    []
   );
 
   const onDrop = useCallback(
