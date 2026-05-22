@@ -1,6 +1,6 @@
 # ATSense — AI-Powered Resume Analyzer
 
-<<<<<<< HEAD
+
 **Live Demo →** https://atsense-analyse.vercel.app/
 =======
 
