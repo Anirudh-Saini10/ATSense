@@ -2,12 +2,13 @@
 
 import * as pdfjsLib from "pdfjs-dist";
 
-// Disable the external Web Worker entirely.
-// Mobile browsers (especially iOS Safari) often fail to load the worker file
-// due to stricter MIME-type enforcement, CORS restrictions, or Content Security
-// Policy. Running pdf.js inline on the main thread avoids all of these issues
-// and has negligible performance impact for resume-sized documents (1-5 pages).
-pdfjsLib.GlobalWorkerOptions.workerSrc = "";
+// Use a CDN-hosted worker that matches our installed pdfjs-dist version.
+// The local public/ worker file was returning 404 on Vercel, which caused:
+//   - Desktop: silent fallback to main-thread (worked by luck)
+//   - Mobile: hard failure (no graceful fallback on iOS Safari / mobile Chrome)
+// A CDN URL guarantees correct MIME type, CORS headers, and availability.
+const PDFJS_VERSION = "5.7.284";
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
 
 /**
  * Read a File into a Uint8Array.
@@ -15,7 +16,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "";
  * for older mobile browsers that lack ArrayBuffer support on File/Blob.
  */
 async function fileToUint8Array(file: File): Promise<Uint8Array> {
-  // Modern path – works on all recent desktop & mobile browsers
   if (typeof file.arrayBuffer === "function") {
     try {
       const buf = await file.arrayBuffer();
@@ -25,7 +25,6 @@ async function fileToUint8Array(file: File): Promise<Uint8Array> {
     }
   }
 
-  // Legacy fallback via FileReader (universal support)
   return new Promise<Uint8Array>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -66,4 +65,5 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 
   return text.trim();
 }
+
 
