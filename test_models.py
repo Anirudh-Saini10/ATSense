@@ -1,11 +1,15 @@
-import google.generativeai as genai
+from openai import OpenAI
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY"),
+)
 
-for model in genai.list_models():
-    print(model.name)
+models = client.models.list()
+for model in models.data:
+    if "deepseek" in model.id.lower():
+        print(model.id)

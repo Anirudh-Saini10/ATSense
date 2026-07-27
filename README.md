@@ -38,7 +38,7 @@ Upload or paste your resume alongside a job description. ATSense runs a full ana
 | Frontend | Next.js 16 + TypeScript + Tailwind CSS v4 |
 | UI Components | shadcn/ui + Framer Motion |
 | PDF Extraction | pdfjs-dist (client-side) |
-| LLM | Google Gemini Flash via Node.js SDK |
+| LLM | DeepSeek V4 Flash via OpenRouter |
 | Prompt Engineering | Structured JSON output via custom prompt |
 | Parsing | Custom JSON parser with error handling |
 | Deployment | Vercel |
@@ -56,14 +56,14 @@ POST /api/analyze → Next.js API route
         ↓
 build_prompt() → structured prompt with JSON schema
         ↓
-Gemini Flash API call (@google/generative-ai)
+OpenRouter API call (deepseek/deepseek-v4-flash)
         ↓
 parse_response() → extracts JSON from LLM output
         ↓
 Glassmorphism UI renders animated score ring, skill chips, cards
 ```
 
-The prompt instructs Gemini to return **only valid JSON** with a fixed schema — no markdown, no preamble. The parser strips any formatting artifacts and loads the result.
+The prompt instructs the model to return **only valid JSON** with a fixed schema — no markdown, no preamble. The parser strips any formatting artifacts and loads the result.
 
 ---
 
@@ -78,7 +78,7 @@ ATSense/
 │   │   ├── globals.css         # Tailwind theme
 │   │   └── api/
 │   │       └── analyze/
-│   │           └── route.ts    # Gemini API route
+│   │           └── route.ts    # OpenRouter / DeepSeek API route
 │   ├── components/
 │   │   ├── score-ring.tsx      # Animated score ring
 │   │   └── ui/                 # shadcn/ui components
@@ -90,7 +90,7 @@ ATSense/
 │   └── package.json
 │
 ├── app.py              # Original Streamlit app (preserved)
-├── gemini_utils.py     # Python Gemini wrapper (preserved)
+├── gemini_utils.py     # Python OpenRouter / DeepSeek wrapper (preserved)
 ├── prompt.py           # Prompt builder (preserved)
 ├── parser.py           # JSON parser (preserved)
 ├── styles.py           # Streamlit CSS (preserved)
@@ -121,7 +121,7 @@ Add this in Vercel dashboard → Project Settings → Environment Variables:
 
 | Key | Value |
 |-----|-------|
-| `GEMINI_API_KEY` | Your Google AI Studio API key |
+| `OPENROUTER_API_KEY` | Your OpenRouter API key |
 
 ### 4. Deploy
 
@@ -139,7 +139,7 @@ npm install
 Create `frontend/.env.local`:
 
 ```
-GEMINI_API_KEY=your_key_here
+OPENROUTER_API_KEY=your_key_here
 ```
 
 ```bash
@@ -161,20 +161,20 @@ pip install -r requirements.txt
 Create `.env`:
 
 ```
-GEMINI_API_KEY=your_key_here
+OPENROUTER_API_KEY=your_key_here
 ```
 
 ```bash
 streamlit run app.py
 ```
 
-Get a free Gemini API key at [aistudio.google.com](https://aistudio.google.com)
+Get an OpenRouter API key at [openrouter.ai](https://openrouter.ai)
 
 ---
 
 ## Prompt Engineering
 
-The core of ATSense is the prompt. It instructs Gemini to:
+The core of ATSense is the prompt. It instructs the model to:
 
 - Score based on skill overlap, keyword alignment, tools, and experience relevance
 - Penalize missing critical skills
@@ -187,7 +187,7 @@ This makes the output deterministic and parseable every time.
 ## Limitations
 
 - ATS scoring is simulated — real ATS systems vary significantly by vendor
-- Results depend on Gemini's interpretation of the resume and JD
+- Results depend on the model's interpretation of the resume and JD
 - Not a substitute for human resume review
 
 ---

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function buildPrompt(resume: string, jobDescription: string): string {
   return `
@@ -62,21 +61,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured." },
+        { error: "OPENROUTER_API_KEY is not configured." },
         { status: 500 }
       );
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "models/gemini-flash-latest" });
-
     const prompt = buildPrompt(resume, jobDescription);
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-v4-flash",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const detail = await aiResponse.text();
+      return NextResponse.json(
+        { error: `OpenRouter request failed: ${aiResponse.status}`, detail },
+        { status: 502 }
+      );
+    }
+
+    const payload = await aiResponse.json();
+    const text = payload.choices?.[0]?.message?.content ?? "";
 
     const data = parseResponse(text);
 

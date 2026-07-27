@@ -1,20 +1,18 @@
-import google.generativeai as genai
+from openai import OpenAI
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-model = genai.GenerativeModel("models/gemini-flash-latest")
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY"),
+)
 
 
 def get_gemini_response(prompt):
-
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-
-    except Exception as e:
-        return str(e)
+    response = client.chat.completions.create(
+        model="deepseek/deepseek-v4-flash",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content
